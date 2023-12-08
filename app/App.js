@@ -3,14 +3,14 @@ import { run_bf } from '../pkg'
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import TextField from '@mui/material/TextField';
+import Typography from "@mui/material/Typography";
+import { styled } from '@mui/material/styles';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -23,8 +23,8 @@ const Item = styled(Paper)(({ theme }) => ({
 const domNode = document.getElementById('root');
 const root = createRoot(domNode);
 
-let predef = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
-let defconfig = { cells: 128, fuel: 4096 };
+const predef = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
+const defconfig = { cells: 128, fuel: 4096 };
 
 const App = () => {
     const [prog, setProg] = React.useState(predef);
@@ -35,9 +35,11 @@ const App = () => {
         <Container component="main" maxWidth="xs">
             <Box sx={{ width: '100%' }}>
                 <Stack spacing={2}>
-                    <Item><Typography variant="h2">
-                        🫠
-                    </Typography></Item>
+                    <Item>
+                        <Typography variant="h2">
+                            😆
+                        </Typography>
+                    </Item>
 
                     <Item>
                         <Box sx={{ m: 1.5 }}><TextField
@@ -48,6 +50,7 @@ const App = () => {
                             variant="outlined"
                             inputProps={{ style: { fontFamily: "monospace" } }}
                             defaultValue={prog}
+                            spellCheck={false}
                             onChange={(e) =>
                                 setProg(e.target.value)
                             }
@@ -60,6 +63,7 @@ const App = () => {
                             variant="outlined"
                             inputProps={{ style: { fontFamily: "monospace" } }}
                             defaultValue={input}
+                            spellCheck={false}
                             onChange={(e) =>
                                 setInput(e.target.value)
                             }
@@ -99,11 +103,13 @@ const App = () => {
                             Run
                         </Button></Box>
                     </Item>
-                    
-                    <Item><Typography>
-                        Output: <br></br>
-                        {output}
-                    </Typography></Item>
+
+                    <Item>
+                        <Typography variant="body1">
+                            Output: <br></br>
+                            {output}
+                        </Typography>
+                    </Item>
                 </Stack>
             </Box>
         </Container>
