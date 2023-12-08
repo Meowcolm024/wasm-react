@@ -1,4 +1,5 @@
 mod bf;
+mod util;
 
 use wasm_bindgen::prelude::*;
 
@@ -14,11 +15,13 @@ pub fn greet(name: &str) {
 
 #[wasm_bindgen]
 pub fn run_bf(prog: String, input: String, cells: usize, fuel: usize) -> String {
-    let prog = prog.bytes().collect::<Vec<u8>>();
-    let input = input.bytes().collect::<Vec<u8>>();
-    let res = bf::eval(prog, input, bf::Config::new(cells, fuel));
-    match res {
-        Ok(v) => v.into_iter().map(|x| x as char).collect(),
-        Err(msg) => msg,
+    let mut io = util::IOBuf::new(input.bytes().rev().collect());
+    let mut machine = bf::Machine::new(util::Config::new(cells, fuel));
+    let res = machine.exec(prog.into(), &mut io);
+    let output: String = String::from_utf8_lossy(&io.output).into();
+    if let Err(msg) = res {
+        format!("{} [Error: {}]", output, msg)
+    } else {
+        output
     }
 }

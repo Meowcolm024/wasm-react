@@ -1,6 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
 import { run_bf } from '../pkg'
+
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from "@mui/material/Box";
@@ -18,7 +20,8 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-const root = document.getElementById('root');
+const domNode = document.getElementById('root');
+const root = createRoot(domNode);
 
 let predef = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
 let defconfig = { cells: 128, fuel: 4096 };
@@ -35,67 +38,71 @@ const App = () => {
                     <Item><Typography variant="h2">
                         🫠
                     </Typography></Item>
-                    <Item><TextField
-                        fullWidth
-                        multiline
-                        id="prog"
-                        label="bf program"
-                        name="prog"
-                        variant="outlined"
-                        defaultValue={prog}
-                        onChange={(e) =>
-                            setProg(e.target.value)
-                        }
-                        autoFocus /></Item>
-                    <Item><TextField
-                        fullWidth
-                        id="input"
-                        label="input buffer"
-                        name="input"
-                        variant="outlined"
-                        defaultValue={input}
-                        onChange={(e) =>
-                            setInput(e.target.value)
-                        }
-                        autoFocus /></Item>
-                    <Item><Stack direction="row" spacing={1}>
-                        <Item><TextField
+
+                    <Item>
+                        <Box sx={{ m: 1.5 }}><TextField
                             fullWidth
-                            id="cells"
-                            label="cell size"
-                            name="cells"
+                            multiline
+                            id="prog"
+                            label="bf program"
                             variant="outlined"
-                            defaultValue={defconfig.cells}
-                            onChange={(e) => {
-                                if (e.target.value < 1) { e.target.value = 1 }
-                                setConfig({ cells: Number(e.target.value), fuel: config.fuel })
-                            }}
-                            type='number'
-                            autoFocus /></Item>
-                        <Item><TextField
+                            inputProps={{ style: { fontFamily: "monospace" } }}
+                            defaultValue={prog}
+                            onChange={(e) =>
+                                setProg(e.target.value)
+                            }
+                            autoFocus /></Box>
+                        <Box sx={{ m: 1.5 }}><TextField
                             fullWidth
-                            id="fuel"
-                            label="max steps"
-                            name="fuel"
+                            id="input"
+                            label="input buffer"
+                            name="input"
                             variant="outlined"
-                            defaultValue={defconfig.fuel}
-                            onChange={(e) => {
-                                if (e.target.value < 1) { e.target.value = 1 }
-                                setConfig({ cells: config.cells, fuel: Number(e.target.value) })
-                            }}
-                            type='number'
-                            autoFocus /></Item>
-                    </Stack></Item>
-                    <Item><Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        onClick={() => setOutput(run_bf(prog, input, config.cells, config.fuel))}
-                    >
-                        Run
-                    </Button></Item>
+                            inputProps={{ style: { fontFamily: "monospace" } }}
+                            defaultValue={input}
+                            onChange={(e) =>
+                                setInput(e.target.value)
+                            }
+                            autoFocus /></Box>
+                        <Box sx={{ m: 1.5 }}><Stack direction="row" spacing={1}>
+                            <TextField
+                                fullWidth
+                                id="cells"
+                                label="cell size"
+                                variant="outlined"
+                                defaultValue={defconfig.cells}
+                                onChange={(e) => {
+                                    if (e.target.value < 1) { e.target.value = 1 }
+                                    setConfig({ cells: Number(e.target.value), fuel: config.fuel })
+                                }}
+                                type='number'
+                                autoFocus />
+                            <TextField
+                                fullWidth
+                                id="fuel"
+                                label="max steps"
+                                variant="outlined"
+                                defaultValue={defconfig.fuel}
+                                onChange={(e) => {
+                                    if (e.target.value < 1) { e.target.value = 1 }
+                                    setConfig({ cells: config.cells, fuel: Number(e.target.value) })
+                                }}
+                                type='number'
+                                autoFocus />
+                        </Stack></Box>
+                        <Box sx={{ m: 1.5 }}><Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            onClick={() => setOutput(run_bf(prog, input, config.cells, config.fuel))}
+                        >
+                            Run
+                        </Button></Box>
+                    </Item>
+                    
                     <Item><Typography>
-                        Output: {output}
+                        Output: <br></br>
+                        {output}
                     </Typography></Item>
                 </Stack>
             </Box>
@@ -103,4 +110,4 @@ const App = () => {
     );
 }
 
-ReactDOM.render(<App />, root);
+root.render(<App />);
