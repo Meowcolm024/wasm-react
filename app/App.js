@@ -21,11 +21,13 @@ const Item = styled(Paper)(({ theme }) => ({
 const root = document.getElementById('root');
 
 let predef = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
+let defconfig = { cells: 128, fuel: 4096 };
 
 const App = () => {
     const [prog, setProg] = React.useState(predef);
     const [input, setInput] = React.useState('');
-    const [output, setOutput] = React.useState(run_bf(predef, ''));
+    const [config, setConfig] = React.useState(defconfig)
+    const [output, setOutput] = React.useState(run_bf(predef, '', defconfig.cells, defconfig.fuel));
     return (
         <Container component="main" maxWidth="xs">
             <Box sx={{ width: '100%' }}>
@@ -56,11 +58,39 @@ const App = () => {
                             setInput(e.target.value)
                         }
                         autoFocus /></Item>
+                    <Item><Stack direction="row" spacing={1}>
+                        <Item><TextField
+                            fullWidth
+                            id="cells"
+                            label="cell size"
+                            name="cells"
+                            variant="outlined"
+                            defaultValue={defconfig.cells}
+                            onChange={(e) => {
+                                if (e.target.value < 1) { e.target.value = 1 }
+                                setConfig({ cells: Number(e.target.value), fuel: config.fuel })
+                            }}
+                            type='number'
+                            autoFocus /></Item>
+                        <Item><TextField
+                            fullWidth
+                            id="fuel"
+                            label="max steps"
+                            name="fuel"
+                            variant="outlined"
+                            defaultValue={defconfig.fuel}
+                            onChange={(e) => {
+                                if (e.target.value < 1) { e.target.value = 1 }
+                                setConfig({ cells: config.cells, fuel: Number(e.target.value) })
+                            }}
+                            type='number'
+                            autoFocus /></Item>
+                    </Stack></Item>
                     <Item><Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        onClick={() => setOutput(run_bf(prog, input))}
+                        onClick={() => setOutput(run_bf(prog, input, config.cells, config.fuel))}
                     >
                         Run
                     </Button></Item>
