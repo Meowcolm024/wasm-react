@@ -1,9 +1,10 @@
-pub fn eval(prog: Vec<u8>, mut input: Vec<u8>) -> Vec<u8> {
+pub fn eval(prog: Vec<u8>, mut input: Vec<u8>) -> Result<Vec<u8>, String> {
     let mut ip = 0;
     let mut st: Vec<usize> = Vec::new();
     let mut res: Vec<u8> = Vec::new();
     let mut mem: Vec<u8> = vec![0; 32];
     let mut mp = 0;
+    input.reverse();
     while ip < prog.len() {
         match prog[ip] {
             b'+' => mem[mp] = mem[mp].overflowing_add(1).0,
@@ -20,22 +21,25 @@ pub fn eval(prog: Vec<u8>, mut input: Vec<u8>) -> Vec<u8> {
             b'>' => mp += 1,
             b'<' => mp -= 1,
             b'.' => res.push(mem[mp]),
-            b',' => mem[mp] = input.pop().unwrap(),
+            b',' => {
+                mem[mp] = match input.pop() {
+                    Some(b) => b,
+                    None => return Err(String::from("Error: not input")),
+                }
+            }
             _ => (),
         }
         ip += 1;
     }
-    res
+    Ok(res)
 }
 
 mod test {
-    use super::eval;
-
     #[test]
     fn ex() {
         let prog = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.";
         let prog = prog.as_bytes().into_iter().map(|x| *x).collect::<Vec<u8>>();
-        let res = eval(prog, vec![]);
+        let res = super::eval(prog, vec![]).unwrap();
         let res: String = res.into_iter().map(|x| x as char).collect();
         println!("res = {:?}", res);
     }

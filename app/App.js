@@ -20,12 +20,12 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const root = document.getElementById('root');
 
-let input = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
-let output = run_bf(input)
+let predef = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
 
 const App = () => {
-    const [prog, setProg] = React.useState(input);
-    const [output, setOutput] = React.useState(run_bf(input));
+    const [prog, setProg] = React.useState(predef);
+    const [input, setInput] = React.useState('');
+    const [output, setOutput] = React.useState(run_bf(predef, ''));
     return (
         <Container component="main" maxWidth="xs">
             <Box sx={{ width: '100%' }}>
@@ -36,25 +36,36 @@ const App = () => {
                     <Item><TextField
                         fullWidth
                         multiline
-                        id="pid"
+                        id="prog"
                         label="bf program"
-                        name="pid"
+                        name="prog"
+                        variant="outlined"
+                        defaultValue={prog}
+                        onChange={(e) =>
+                            setProg(e.target.value)
+                        }
+                        autoFocus /></Item>
+                    <Item><TextField
+                        fullWidth
+                        id="input"
+                        label="input buffer"
+                        name="input"
                         variant="outlined"
                         defaultValue={input}
                         onChange={(e) =>
-                            setProg(e.target.value)
+                            setInput(e.target.value)
                         }
                         autoFocus /></Item>
                     <Item><Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        onClick={() => setOutput(run_bf(prog))}
+                        onClick={() => setOutput(run_bf(prog, input))}
                     >
                         Run
                     </Button></Item>
                     <Item><Typography>
-                        Result: {output}
+                        Output: {output}
                     </Typography></Item>
                 </Stack>
             </Box>

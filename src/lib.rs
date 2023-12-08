@@ -1,6 +1,5 @@
 mod bf;
 
-use bf::eval;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -14,8 +13,12 @@ pub fn greet(name: &str) {
 }
 
 #[wasm_bindgen]
-pub fn run_bf(prog: String) -> String {
+pub fn run_bf(prog: String, input: String) -> String {
     let prog = prog.bytes().collect::<Vec<u8>>();
-    let res = eval(prog, vec![]);
-    res.into_iter().map(|x| x as char).collect()
+    let input = input.bytes().collect::<Vec<u8>>();
+    let res = bf::eval(prog, input);
+    match res {
+        Ok(v) => v.into_iter().map(|x| x as char).collect(),
+        Err(msg) => msg,
+    }
 }
