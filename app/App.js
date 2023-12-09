@@ -11,13 +11,14 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from "@mui/material/Typography";
 import { styled } from '@mui/material/styles';
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.secondary
 }));
 
 const domNode = document.getElementById('root');
@@ -25,6 +26,8 @@ const root = createRoot(domNode);
 
 const predef = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>."
 const defconfig = { cells: 128, fuel: 4096 };
+const MAX_CELLS = 32767;
+const MAX_STEPS = Math.pow(10, 10);
 
 const App = () => {
     const [prog, setProg] = React.useState(predef);
@@ -51,9 +54,7 @@ const App = () => {
                             inputProps={{ style: { fontFamily: "monospace" } }}
                             defaultValue={prog}
                             spellCheck={false}
-                            onChange={(e) =>
-                                setProg(e.target.value)
-                            }
+                            onChange={(e) => setProg(e.target.value)}
                             autoFocus /></Box>
                         <Box sx={{ m: 1.5 }}><TextField
                             fullWidth
@@ -64,10 +65,8 @@ const App = () => {
                             inputProps={{ style: { fontFamily: "monospace" } }}
                             defaultValue={input}
                             spellCheck={false}
-                            onChange={(e) =>
-                                setInput(e.target.value)
-                            }
-                            autoFocus /></Box>
+                            onChange={(e) => setInput(e.target.value)}
+                        /></Box>
                         <Box sx={{ m: 1.5 }}><Stack direction="row" spacing={1}>
                             <TextField
                                 fullWidth
@@ -77,10 +76,11 @@ const App = () => {
                                 defaultValue={defconfig.cells}
                                 onChange={(e) => {
                                     if (e.target.value < 1) { e.target.value = 1 }
+                                    else if (e.target.value > MAX_CELLS) { e.target.value = MAX_CELLS }
                                     setConfig({ cells: Number(e.target.value), fuel: config.fuel })
                                 }}
                                 type='number'
-                                autoFocus />
+                            />
                             <TextField
                                 fullWidth
                                 id="fuel"
@@ -89,10 +89,11 @@ const App = () => {
                                 defaultValue={defconfig.fuel}
                                 onChange={(e) => {
                                     if (e.target.value < 1) { e.target.value = 1 }
+                                    else if (e.target.value > MAX_STEPS) { e.target.value = MAX_STEPS }
                                     setConfig({ cells: config.cells, fuel: Number(e.target.value) })
                                 }}
                                 type='number'
-                                autoFocus />
+                            />
                         </Stack></Box>
                         <Box sx={{ m: 1.5 }}><Button
                             type="submit"
@@ -104,12 +105,26 @@ const App = () => {
                         </Button></Box>
                     </Item>
 
-                    <Item>
-                        <Typography variant="body1">
-                            Output: <br></br>
-                            {output}
-                        </Typography>
-                    </Item>
+                    <Accordion defaultExpanded>
+                        <AccordionSummary
+                        // expandIcon={<ExpandMoreIcon />}
+                        >
+                            <Typography variant="h5" sx={{ mb: 1.5 }}>
+                                Output
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography
+                                variant="body1"
+                                textAlign='center'
+                                style={{ wordWrap: "break-word" }}
+                                color="text.secondary"
+                                sx={{ mb: 1.5 }}
+                            >
+                                {output}
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
                 </Stack>
             </Box>
         </Container>
