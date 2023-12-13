@@ -5,9 +5,9 @@ const WasmPackPlugin = require("@wasm-tool/wasm-pack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
-    entry: ['./index.js', './app/App.js'],
+    entry: ['./index.js', './app/App.tsx'],
     output: {
-        path: path.resolve(__dirname, 'docs'), // name trick for github pages
+        path: path.resolve(__dirname, './dist'),
         filename: 'index.js',
     },
     plugins: [
@@ -37,18 +37,13 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-react', '@babel/preset-env'],
-                    },
-                },
-            },
-            {
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader'],
+            },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
             },
         ],
     },

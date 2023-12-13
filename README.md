@@ -9,9 +9,9 @@ The (rather messy) project structure
 ```txt
 ./
 |-- app
-|     App.js            # the react app
+|     App.tsx           # the react app
 |-- cli
-|     main.js           # the cli app for native rust
+|     main.rs           # the cli app for native rust
 |-- public
 |     index.css         # index page css
 |     index.html        # index page for ReactDOM render

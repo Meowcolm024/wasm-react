@@ -1,6 +1,6 @@
 import { run_bf } from '../pkg'
 
-import React from 'react';
+import * as React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import Box from "@mui/material/Box";
@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField';
 import Typography from "@mui/material/Typography";
 import { styled } from '@mui/material/styles';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,6 +29,19 @@ const predef = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>+
 const defconfig = { cells: 128, fuel: 4096 };
 const MAX_CELLS = 32767;
 const MAX_STEPS = Math.pow(10, 10);
+
+function setRangeK<R>(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    min: number,
+    max: number
+): (k: (_: number) => R) => R {
+    if (Number(e.target.value) < min) {
+        e.target.value = min.toString();
+    } else if (Number(e.target.value) > max) {
+        e.target.value = max.toString();
+    }
+    return (k) => k(Number(e.target.value));
+}
 
 const App = () => {
     const [prog, setProg] = React.useState(predef);
@@ -74,11 +88,7 @@ const App = () => {
                                 label="cell size"
                                 variant="outlined"
                                 defaultValue={defconfig.cells}
-                                onChange={(e) => {
-                                    if (e.target.value < 1) { e.target.value = 1 }
-                                    else if (e.target.value > MAX_CELLS) { e.target.value = MAX_CELLS }
-                                    setConfig({ cells: Number(e.target.value), fuel: config.fuel })
-                                }}
+                                onChange={(e) => setRangeK(e, 1, MAX_CELLS)((c) => setConfig({ cells: c, fuel: config.fuel }))}
                                 type='number'
                             />
                             <TextField
@@ -87,11 +97,7 @@ const App = () => {
                                 label="max steps"
                                 variant="outlined"
                                 defaultValue={defconfig.fuel}
-                                onChange={(e) => {
-                                    if (e.target.value < 1) { e.target.value = 1 }
-                                    else if (e.target.value > MAX_STEPS) { e.target.value = MAX_STEPS }
-                                    setConfig({ cells: config.cells, fuel: Number(e.target.value) })
-                                }}
+                                onChange={(e) => setRangeK(e, 1, MAX_STEPS)((f) => setConfig({ cells: config.cells, fuel: f }))}
                                 type='number'
                             />
                         </Stack></Box>
@@ -106,10 +112,8 @@ const App = () => {
                     </Item>
 
                     <Accordion defaultExpanded>
-                        <AccordionSummary
-                        // expandIcon={<ExpandMoreIcon />}
-                        >
-                            <Typography variant="h5" sx={{ mb: 1.5 }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography variant="h5">
                                 Output
                             </Typography>
                         </AccordionSummary>
